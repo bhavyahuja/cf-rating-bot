@@ -23,14 +23,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r codeforces-rating-bot/requirements.txt
 
-    - name: Create config.ini
-      working-directory: ./codeforces-rating-bot
+    - name: Validate required secrets
+      env:
+        SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+        SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        SMTP_USER: ${{ secrets.SMTP_USER }}
+        SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo "[EMAIL]" > config.ini
-        echo "sender_email = ${{ secrets.SENDER_EMAIL }}" >> config.ini
-        echo "password = ${{ secrets.SMTP_PASSWORD }}" >> config.ini
-        echo "smtp_server = ${{ secrets.SMTP_SERVER }}" >> config.ini
-        echo "smtp_port = ${{ secrets.SMTP_PORT }}" >> config.ini
+        test -n "$SMTP_SERVER" || { echo "Missing secret: SMTP_SERVER"; exit 1; }
+        test -n "$SMTP_PORT" || { echo "Missing secret: SMTP_PORT"; exit 1; }
+        test -n "$SMTP_USER" || { echo "Missing secret: SMTP_USER"; exit 1; }
+        test -n "$SMTP_PASSWORD" || { echo "Missing secret: SMTP_PASSWORD"; exit 1; }
+        test -n "$GCP_SA_KEY" || { echo "Missing secret: GCP_SA_KEY"; exit 1; }
 
     - name: Create Google Cloud credentials file
       run: echo '${{ secrets.GCP_SA_KEY }}' > codeforces-rating-bot/service_account.json
@@ -41,7 +46,6 @@ jobs:
         SMTP_PORT: ${{ secrets.SMTP_PORT }}
         SMTP_USER: ${{ secrets.SMTP_USER }}
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
       run: |
         cd codeforces-rating-bot
         python3 bot.py

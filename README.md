@@ -55,14 +55,13 @@ Creates a service account.
 Has repository secrets :
 
 *   `GCP_SA_KEY`: The entire content of your downloaded JSON service account key file.
-*   `SENDER_EMAIL`: The email address for sending notifications.
+*   `SMTP_USER`: The email address / username for sending notifications.
 *   `SMTP_PASSWORD`: The password for the sender's email account (an app-specific password is recommended).
 *   `SMTP_SERVER`: The SMTP server for your email provider (e.g., `smtp.gmail.com`).
 *   `SMTP_PORT`: The SMTP port (e.g., `587`).
 
 ## Usage
 
-The bot is configured to run automatically every 15 minutes using GitHub Actions. 
+The bot is configured to run automatically every 5 minutes using GitHub Actions.
 
-For local testing, need to add `config.ini` and `service_account.json` files with the appropriate content.
-
+For local testing, provide the same SMTP values as environment variables and add `service_account.json` with the appropriate content.
